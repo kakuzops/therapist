@@ -1,3 +1,4 @@
+'use client'
 import {
     Sidebar,
     SidebarContent,
@@ -13,62 +14,97 @@ import {
 
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
 import { NavUser } from "./nav-user"
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { usePathname } from 'next/navigation';
+import { authClient } from "@/lib/auth-client";
 
-const session = await auth.api.getSession({
-        headers: await headers(),
-})
 
-const sessionUser = session?.user
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import clsx from "clsx";
+
+const pathname = usePathname();
 
 const items = [
     {
         title: "Home",
-        url: "#",
+        url: "/dashboard",
         icon: Home,
     },
     {
         title: "Inbox",
-        url: "#",
+        url: "/dashboard/inbox",
         icon: Inbox,
     },
     {
         title: "Calendar",
-        url: "#",
+        url: "/dashboard/calendar",
         icon: Calendar,
     },
     {
         title: "Search",
-        url: "#",
+        url: "/dashboard/search",
         icon: Search,
     },
     {
         title: "Settings",
-        url: "#",
+        url: "/dashboard/settings",
         icon: Settings,
     },
-]
+];
 
-export function SideBarDashboard() {
+const NavLinks = () => (
+    <div className="flex flex-col space-y-2">
+        {items.map((item) => (
+            <SidebarLink
+                key={item.url}
+                href={item.url}
+                icon={<item.icon className="w-5 h-5" />}
+                label={item.title}
+                pathname={pathname}
+                />
+        ))}
+    </div>
+);
+
+interface SidebarDashboardLinkProps {
+    href: string;
+    icon: React.ReactNode;
+    label: string;
+    pathname: string;
+    isCollapsed?: boolean;
+}
+
+function SidebarLink({ href, icon, label, pathname, isCollapsed }: SidebarDashboardLinkProps) {
+    console.log("LABEL", label);
+    return (
+        <Link href={href}>
+            <div className={clsx("flex items-center gap-2 px-3 py-2 rounded-md transition-colors", {
+                "text-white bg-neutral-600": pathname === href,
+                "text-gray-700 hover:bg-blue-300 hover:text-white": pathname !== href,
+            })}>
+                <span className="w-6 h-6">{icon}</span>
+                {!isCollapsed && <span>{label}</span>}
+            </div>
+        </Link>
+    )
+}
+
+export function SideBarDashboard({ children }: { children?: React.ReactNode }) {
+    const [sessionUser, setSessionUser] = useState<any>(null);
+    useEffect(() => {
+        authClient.getSession().then(session => {
+            setSessionUser(session?.data?.user ?? null);
+        });
+    }, []);
+
     return (
         <SidebarProvider>
             <Sidebar>
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupLabel>Application</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {items.map((item) => (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton asChild>
-                                            <a href={item.url}>
-                                                <item.icon />
-                                                <span>{item.title}</span>
-                                            </a>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
+                                <NavLinks />
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
@@ -77,8 +113,8 @@ export function SideBarDashboard() {
                     user={
                         sessionUser
                             ? {
-                                name: sessionUser.name,
-                                email: sessionUser.email,
+                                name: sessionUser.name ?? undefined,
+                                email: sessionUser.email ?? undefined,
                                 image: sessionUser.image ?? undefined,
                                 avatar: undefined,
                             }
@@ -87,8 +123,8 @@ export function SideBarDashboard() {
                 />
             </Sidebar>
             <SidebarFooter>
-               
+
             </SidebarFooter>
         </SidebarProvider>
-    )
+    );
 }

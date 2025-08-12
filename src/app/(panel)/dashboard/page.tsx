@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { ButtonSignOut } from "./_components/button-signout";
-import { SideBarDashboard } from "./_components/sidebar-dashboard";
+import {SideBarDashboard} from "./_components/sidebar-dashboard";
 
 export default async function Dashboard() {
 
