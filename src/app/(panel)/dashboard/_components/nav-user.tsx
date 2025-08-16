@@ -34,6 +34,7 @@ import { authClient } from "@/lib/auth-client";
 
 export function NavUser({
     user,
+    className,
 }: {
     user: {
         name?: string
@@ -41,6 +42,7 @@ export function NavUser({
         avatar?: string
         image?: string
     }
+    className?: string
 }) {
 
     const { isMobile } = useSidebar()
@@ -58,7 +60,7 @@ export function NavUser({
     }
 
     return (
-        <SidebarMenu>
+        <SidebarMenu className={className}>
             <SidebarMenuItem>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
