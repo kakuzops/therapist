@@ -63,6 +63,8 @@ export function LoginForm() {
         }, {
             onRequest: () => {
                 setIsLoading(true)
+                console.log("Iniciando login com Google...")
+
             },
             onSuccess: () => {
                 console.log("Login com Google realizado com sucesso")
@@ -77,7 +79,13 @@ export function LoginForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="relative">
+                {isLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                )}
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                     control={form.control}
                     name="email"
@@ -162,7 +170,8 @@ export function LoginForm() {
                     </svg>
                     <span className="sr-only text-black">Entrar com Google</span>
                 </Button>
-            </form>
+                </form>
+            </div>
         </Form>
     )
 }

@@ -22,8 +22,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 
-const pathname = usePathname();
-
 const items = [
     {
         title: "Home",
@@ -52,19 +50,22 @@ const items = [
     },
 ];
 
-const NavLinks = () => (
-    <div className="flex flex-col space-y-2">
-        {items.map((item) => (
-            <SidebarLink
-                key={item.url}
-                href={item.url}
-                icon={<item.icon className="w-5 h-5" />}
-                label={item.title}
-                pathname={pathname}
-                />
-        ))}
-    </div>
-);
+const NavLinks = () => {
+    const pathname = usePathname();
+    return (
+        <div className="flex flex-col space-y-2">
+            {items.map((item) => (
+                <SidebarLink
+                    key={item.url}
+                    href={item.url}
+                    icon={<item.icon className="w-5 h-5" />}
+                    label={item.title}
+                    pathname={pathname}
+                    />
+            ))}
+        </div>
+    );
+};
 
 interface SidebarDashboardLinkProps {
     href: string;

@@ -39,7 +39,7 @@ export function SignupForm() {
             email: "",
             password: "",
             confirmPassword: "",
-        },
+        }
     })
 
     async function onSubmit(formData: SignupFormValues) {
