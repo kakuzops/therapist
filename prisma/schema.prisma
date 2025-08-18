@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String        @id
   name          String
   email         String
   emailVerified Boolean
@@ -24,6 +24,8 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  patients      Patient[]     // Add this line
+  appointments  Appointment[] // Add this line
 
   @@unique([email])
   @@map("user")
@@ -52,7 +54,7 @@ model Account {
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
-  idToken               String?
+  idToken              String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
@@ -72,4 +74,34 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Patient {
+  id            String        @id @default(cuid())
+  name          String
+  email         String
+  phone         String?
+  imageUrl      String?
+  therapistId   String
+  therapist     User         @relation(fields: [therapistId], references: [id])
+  appointments  Appointment[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("patient")
+}
+
+model Appointment {
+  id          String    @id @default(cuid())
+  startTime   DateTime
+  endTime     DateTime
+  notes       String?
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  therapistId String
+  therapist   User      @relation(fields: [therapistId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("appointment")
 }

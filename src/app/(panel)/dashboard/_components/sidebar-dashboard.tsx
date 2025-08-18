@@ -25,7 +25,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import clsx from "clsx";
-import { Banknote, CalendarCheck2, ChevronLeft, ChevronRight, Folder, FolderArchive, Icon, List, Settings, Calendar, Home, Inbox, Search, Sidebar } from 'lucide-react';
+import { Banknote, CalendarCheck2, ChevronLeft, ChevronRight, Folder, FolderArchive, Icon, List, Settings, Calendar, Home, Inbox, Search, Sidebar, PersonStanding } from 'lucide-react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 const items = [
@@ -45,9 +45,9 @@ const items = [
         icon: Calendar,
     },
     {
-        title: "Search",
-        url: "/dashboard/search",
-        icon: Search,
+        title: "Pacientes",
+        url: "/dashboard/pacient",
+        icon: PersonStanding,
     },
     {
         title: "Settings",
@@ -139,9 +139,27 @@ export function SideBarDashboard({ children }:
                 </Button>
 
                 {isCollapsed && (
-                    <nav className='flex flex-col gap-1 overflow-hidden mt-2'>
-                        <NavLinks isCollapsed={isCollapsed} />
-                    </nav>
+                   <div>
+                        <nav className='flex flex-col gap-1 overflow-hidden mt-2'>
+                            <NavLinks isCollapsed={isCollapsed} />
+                        </nav>
+                            <SidebarProvider >
+                                <NavUser className="mb-6 mt-4"
+                                    user={
+                                        sessionUser
+                                            ? {
+                                                name: sessionUser.name ?? undefined,
+                                                email: sessionUser.email ?? undefined,
+                                                image: sessionUser.image ?? undefined,
+                                                avatar: undefined,
+                                            }
+                                            : { name: undefined, email: undefined, image: undefined, avatar: undefined }
+                                    }
+                                />
+
+                            </SidebarProvider>
+                   </div>
+                    
                 )}
 
                 <Collapsible open={!isCollapsed}>
